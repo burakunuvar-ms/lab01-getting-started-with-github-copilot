@@ -42,8 +42,45 @@ activities = {
         "schedule": "Tuesdays and Thursdays, 4:00 PM - 5:30 PM",
         "max_participants": 25,
         "participants": ["sofia@student.uva.nl", "james@student.uva.nl"]
+    },
+    "Swimming Team": {
+        "description": "Competitive and recreational swimming training at UvA sports center",
+        "schedule": "Mondays and Fridays, 6:00 PM - 7:30 PM",
+        "max_participants": 30,
+        "participants": ["thomas@student.uva.nl", "lisa@student.uva.nl"]
+    },
+    "Football Club": {
+        "description": "Join our football community for friendly matches and training sessions",
+        "schedule": "Sundays, 2:00 PM - 4:00 PM",
+        "max_participants": 22,
+        "participants": ["marco@student.uva.nl", "elena@student.uva.nl"]
+    },
+    "Photography Workshop": {
+        "description": "Learn photography techniques and explore Amsterdam's visual storytelling",
+        "schedule": "Saturdays, 2:00 PM - 4:00 PM",
+        "max_participants": 12,
+        "participants": ["aisha@student.uva.nl", "david@student.uva.nl"]
+    },
+    "Theatre & Drama Club": {
+        "description": "Perform in plays, improv, and creative theatrical productions",
+        "schedule": "Wednesdays, 7:00 PM - 9:00 PM",
+        "max_participants": 18,
+        "participants": ["emma@student.uva.nl", "olaf@student.uva.nl"]
+    },
+    "Philosophy Discussion Group": {
+        "description": "Engage in deep philosophical conversations and debate contemporary issues",
+        "schedule": "Thursdays, 5:30 PM - 7:00 PM",
+        "max_participants": 20,
+        "participants": ["nina@student.uva.nl", "tobias@student.uva.nl"]
+    },
+    "Environmental Science Club": {
+        "description": "Research and action group focused on sustainability and climate science",
+        "schedule": "Tuesdays, 6:00 PM - 7:30 PM",
+        "max_participants": 16,
+        "participants": ["lars@student.uva.nl", "yuki@student.uva.nl"]
     }
 }
+
 
 
 @app.get("/")
@@ -70,6 +107,25 @@ def signup_for_activity(activity_name: str, email: str):
     if len(activity["participants"]) >= activity["max_participants"]:
         raise HTTPException(status_code=400, detail="Activity is full")
 
+    # Validate student is not already signed up
+    if email in activity["participants"]:
+        raise HTTPException(status_code=400, detail="Student already signed up for this activity")  
+    
     # Add student
     activity["participants"].append(email)
     return {"message": f"Signed up {email} for {activity_name}"}
+
+
+@app.delete("/activities/{activity_name}/signup")
+def unregister_from_activity(activity_name: str, email: str):
+    """Unregister a student from an activity"""
+    if activity_name not in activities:
+        raise HTTPException(status_code=404, detail="Activity not found")
+
+    activity = activities[activity_name]
+
+    if email not in activity["participants"]:
+        raise HTTPException(status_code=404, detail="Student is not signed up for this activity")
+
+    activity["participants"].remove(email)
+    return {"message": f"Unregistered {email} from {activity_name}"}
