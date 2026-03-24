@@ -1,0 +1,22 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch University of Amsterdam WebApp",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "python",
+      "module": "uvicorn",
+      "args": [
+        "src.app:app",
+        "--reload",
+        "--reload-include",
+        "src/static/*"
+      ],
+      "jinja": true
+    }
+  ]
+}
